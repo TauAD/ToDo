@@ -10,7 +10,7 @@ import com.example.todo.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var adapter: TaskAdapter
+    //private lateinit var adapter: TaskAdapter
 
     private var tasksBase = mutableListOf(
         Task("Задача №1", "нет"),
