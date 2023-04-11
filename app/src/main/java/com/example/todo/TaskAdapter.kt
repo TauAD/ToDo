@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 
 
-class TaskAdapter(private val tasks: MutableList<Task>, private val context: Context): RecyclerView.Adapter<TaskAdapter.MyViewHolder>(), Editable {
+class TaskAdapter(private val tasks: MutableList<Task>, private val context: Context): RecyclerView.Adapter<TaskAdapter.MyViewHolder>() {
     var pos: Int = 0
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
@@ -23,17 +23,18 @@ class TaskAdapter(private val tasks: MutableList<Task>, private val context: Con
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.task_item, parent, false)
-        Log.d("test", "in onCreateViewHolder")
         return MyViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         pos = position
         val dialog = DeleteTaskDialogFragment()
-        Log.d("test", "in onBindViewHolder")
+        val args = Bundle()
+        args.putInt("position", position)
 
         holder.textviewTask.text = tasks[position].taskText
         holder.buttonDeleteTask.setOnClickListener {
+            dialog.arguments = args
             dialog.show((context as AppCompatActivity).supportFragmentManager, "custom")
         }
     }
@@ -41,14 +42,4 @@ class TaskAdapter(private val tasks: MutableList<Task>, private val context: Con
     override fun getItemCount(): Int {
         return tasks.size
     }
-
-    override fun deleteTask() {
-        tasks.removeAt(this.pos)
-        notifyDataSetChanged()
-    }
-
-    override fun addTask(task: String) {
-        tasks.add(Task(task, "нет"))
-    }
-
 }

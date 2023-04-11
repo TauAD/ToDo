@@ -13,6 +13,7 @@ class DeleteTaskDialogFragment : DialogFragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         editable = context as Editable
+        Log.d("test", "in DeleteTaskDialogFragment")
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -23,7 +24,7 @@ class DeleteTaskDialogFragment : DialogFragment() {
         return builder
             .setTitle("Удалить заметку")
             .setMessage("Для удаления заметки нажмите ОК")
-            .setPositiveButton("OK") { dialog, which -> editable?.deleteTask()}
+            .setPositiveButton("OK") { dialog, which -> editable?.deleteTask(position)}
             .setNegativeButton("Отмена", null)
             .create()
     }
