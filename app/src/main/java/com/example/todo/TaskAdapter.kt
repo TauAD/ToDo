@@ -1,45 +1,54 @@
 package com.example.todo
 
-import android.content.Context
-import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.example.todo.databinding.TaskItemBinding
+import com.example.todo.room.Task
 
+class TaskAdapter: RecyclerView.Adapter<TaskAdapter.MyViewHolder>() {
 
-class TaskAdapter(private val tasks: MutableList<Task>, private val context: Context): RecyclerView.Adapter<TaskAdapter.MyViewHolder>() {
-    var pos: Int = 0
+    var taskList = mutableListOf<Task>()
+    var clickListener: ListClickListener<Task>? = null
 
-    class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        val textviewTask: TextView = itemView.findViewById(R.id.taskText)
-        val buttonDeleteTask: ImageButton = itemView.findViewById(R.id.deleteButton)
-        //val check_Task: CheckBox = itemView.findViewById(R.id.taskCheck)
+    class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val binding = TaskItemBinding.bind(itemView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.task_item, parent, false)
+        val itemView = LayoutInflater
+                        .from(parent.context)
+                        .inflate(R.layout.task_item, parent, false)
+
         return MyViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        pos = position
-        val dialog = DeleteTaskDialogFragment()
-        val args = Bundle()
-        args.putInt("position", position)
+        val task = taskList[position]
 
-        holder.textviewTask.text = tasks[position].taskText
-        holder.buttonDeleteTask.setOnClickListener {
-            dialog.arguments = args
-            dialog.show((context as AppCompatActivity).supportFragmentManager, "custom")
+        holder.binding.run {
+            taskText.text = task.taskText
+
+            layout.setOnClickListener { clickListener?.onClick(task, position) }
+
+            deleteButton.setOnClickListener { clickListener?.onDelete(task) }
         }
     }
 
-    override fun getItemCount(): Int {
-        return tasks.size
+    override fun getItemCount(): Int { return taskList.size }
+
+    fun setOnItemClick(listClickListener: ListClickListener<Task>) {
+        this.clickListener = listClickListener
+    }
+
+    interface ListClickListener<T> {
+        fun onClick(task: T, position: Int)
+        fun onDelete(task: T)
+    }
+
+    fun setTasks(tasks: List<Task>?) {
+        taskList = tasks?.toMutableList()!!
+        notifyDataSetChanged()
     }
 }
