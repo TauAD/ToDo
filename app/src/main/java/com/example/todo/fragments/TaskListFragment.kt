@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todo.TaskAdapter
 import com.example.todo.TaskViewModel
 import com.example.todo.databinding.TaskListFragmentBinding
@@ -17,7 +19,7 @@ class TaskListFragment : Fragment() {
 
     private var _binding: TaskListFragmentBinding? = null
     private val binding get() = _binding!!
-    private val model: TaskViewModel by activityViewModels()
+    private val vm: TaskViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,9 +33,10 @@ class TaskListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val adapter = TaskAdapter()
-        Log.d("TEST", "${model.allTasks.value}")
-        model.allTasks.value?.let { adapter.setTasks(it) }
+        binding.taskListView.layoutManager = LinearLayoutManager(activity)
         binding.taskListView.adapter = adapter
+        vm.allTasks.value?.let { adapter.setTasks(it) }
+        Log.d("FRAGMENT", "in onViewCreated")
 
         adapter.setOnItemClick(object : TaskAdapter.ListClickListener<Task> {
             override fun onClick(task: Task, position: Int) {
@@ -41,16 +44,16 @@ class TaskListFragment : Fragment() {
 //                intent.putExtra("task", task)
 //                startActivity(intent)
             }
-
-            override fun onDelete(task: Task) { model.deleteTask(task) }
+            override fun onDelete(task: Task) { vm.deleteTask(task) }
         })
 
-//        model.allTasks.observe(this) {
-//            adapter.setTasks(model.allTasks.value)
-//            Log.d("TST", "${model.allTasks.value}")
-//        }
+        activity?.let {
+            vm.allTasks.observe(it) {
+                adapter.setTasks(vm.allTasks.value)
+                Log.d("TST", "${vm.allTasks.value}")
+            }
+        }
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

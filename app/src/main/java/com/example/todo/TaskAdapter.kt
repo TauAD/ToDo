@@ -3,6 +3,7 @@ package com.example.todo
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.databinding.TaskItemBinding
 import com.example.todo.room.Task
@@ -15,7 +16,6 @@ class TaskAdapter: RecyclerView.Adapter<TaskAdapter.MyViewHolder>() {
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding = TaskItemBinding.bind(itemView)
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val itemView = LayoutInflater
                         .from(parent.context)
@@ -23,7 +23,6 @@ class TaskAdapter: RecyclerView.Adapter<TaskAdapter.MyViewHolder>() {
 
         return MyViewHolder(itemView)
     }
-
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val task = taskList[position]
 
@@ -35,7 +34,6 @@ class TaskAdapter: RecyclerView.Adapter<TaskAdapter.MyViewHolder>() {
             deleteButton.setOnClickListener { clickListener?.onDelete(task) }
         }
     }
-
     override fun getItemCount(): Int { return taskList.size }
 
     fun setOnItemClick(listClickListener: ListClickListener<Task>) {

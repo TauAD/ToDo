@@ -9,19 +9,24 @@ import com.example.todo.databinding.TaskAddBinding
 import com.example.todo.room.Task
 
 class AddTaskActivity : AppCompatActivity() {
-    lateinit var binding:TaskAddBinding
-    lateinit var model: TaskViewModel
+    lateinit var binding: TaskAddBinding
+    lateinit var vm: TaskViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = TaskAddBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        model = ViewModelProvider(this)[TaskViewModel::class.java]
+        vm = ViewModelProvider(
+            this,
+            ViewModelProvider
+                .AndroidViewModelFactory
+                .getInstance(application)
+        ).get(TaskViewModel::class.java)
 
         binding.addTaskBtn.setOnClickListener {
             if (binding.taskEdit.text.isNotEmpty()) {
                 val task = Task(taskText = binding.taskEdit.text.toString())
-                model.insertTask(task)
+                vm.insertTask(task)
                 this.finish()
             } else {
                 Toast.makeText(this, "Invalid Input", Toast.LENGTH_SHORT).show()
