@@ -28,9 +28,7 @@ class TaskAdapter: RecyclerView.Adapter<TaskAdapter.MyViewHolder>() {
 
         holder.binding.run {
             taskText.text = task.taskText
-
             layout.setOnClickListener { clickListener?.onClick(task, position) }
-
             deleteButton.setOnClickListener { clickListener?.onDelete(task) }
         }
     }
